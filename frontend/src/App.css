@@ -1,38 +1,23 @@
-.App {
-  text-align: center;
+/*###main App*/
+.control-fab {
+    position: fixed !important;
+    top: 6px;
+    right: 6px;
+    scale: 0.8;
+    background-color: var(--accent-color) !important;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/*### short cuts layout*/
+.shortCutsGrid {
+    gap: 1rem;
+    width: 80%;
+    max-width: 80%;
+    height: 70%;
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-columns: repeat(8, minmax(128px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+    grid-template-rows: repeat(2, 180px);
 }
+.shortCutsGrid .shortCut {
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }

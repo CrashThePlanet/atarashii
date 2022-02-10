@@ -1,0 +1,9 @@
+.searchInput {
+    width: calc(100% - 96px);
+    color: var(--font-color) !important;
+    font-size: 20px !important;
+}
+.searchInput.css-a88p61-MuiInputBase-root-MuiInput-root::before, .searchInput.css-a88p61-MuiInputBase-root-MuiInput-root::after, .css-a88p61-MuiInputBase-root-MuiInput-root:hover:not(.Mui-disabled)::before {
+    text-decoration: none;
+    border: 0 !important;
+}

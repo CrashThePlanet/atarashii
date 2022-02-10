@@ -1,9 +1,9 @@
 #!/bin/bash
 
-cd backend
-npm run devStart
+cd ./backend
+gnome-terminal --title="api" -e 'bash -c "npm run devStart"'
 
 cd ./../frontend
-npm start
+gnome-terminal --title="api" -e 'bash -c "npm start"'
 
 

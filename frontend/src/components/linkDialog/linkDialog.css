@@ -1,0 +1,6 @@
+.linkDialog .css-tlc64q-MuiPaper-root-MuiDialog-paper {
+    background-color: var(--secondary-color);
+}
+.css-1poimk-MuiPaper-root-MuiMenu-paper-MuiPaper-root-MuiPopover-paper {
+    background-color: var(--secondary-color) !important;
+}
