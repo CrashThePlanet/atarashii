@@ -83,7 +83,7 @@ class CreateLinkDialog extends React.Component {
     });
 
     createItem = async () => {
-        console.log(this.state.wUrl);
+        // check if name is empty -> user has to put something in
         if ((this.state.wName.length > 0 && this.state.wUrl.length > 0) || this.state.fName.length > 0) {
             let itemName;
             if (this.state.type === 'link') {
@@ -91,6 +91,7 @@ class CreateLinkDialog extends React.Component {
             } else if (this.state.type === 'folder') {
                 itemName = this.state.fName;
             }
+            // call api to create item
             await fetch('http://localhost:3001/createLink', 
                 {
                     method: 'POST',
@@ -101,11 +102,11 @@ class CreateLinkDialog extends React.Component {
                         type: this.state.type,
                         name: itemName,
                         url: this.state.wUrl,
+                        path: this.props.path
                     })
                 }
             )
             .then(res => res.json()).then(res => {
-                console.log(res);
                 this.props.closeDialog();
             })
             .catch(err => console.log(err));
