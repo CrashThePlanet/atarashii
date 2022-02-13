@@ -92,7 +92,7 @@ class CreateLinkDialog extends React.Component {
                 itemName = this.state.fName;
             }
             // call api to create item
-            await fetch('http://localhost:3001/createLink', 
+            await fetch('http://www.api.atarashii.til-hempel.com/createLink', 
                 {
                     method: 'POST',
                     headers: {

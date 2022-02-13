@@ -7,7 +7,6 @@ import Tooltip from '@mui/material/Tooltip';
 import Searchbar from './components/searchbar/searchbar';
 import CreateLinkDialog from './components/linkDialog/linkDialog';
 import ShortCutElement from './components/shortCutElement/shortCutElement';
-import FolderViewWithHooks from './components/folderView/folderView';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
@@ -51,7 +50,7 @@ class MainPage extends React.Component {
     }
 
     async getLink() {
-        await fetch('http://localhost:3001/links')
+        await fetch('http://www.api.atarashii.til-hempel.com/links')
         .then(res => res.json())
         .then(data => {
             this.setState({
@@ -78,7 +77,7 @@ class MainPage extends React.Component {
         });
     }
     async getSubLink(path) {
-        await fetch('http://localhost:3001/getFolderSubLinks', {
+        await fetch('http://www.api.atarashii.til-hempel.com/getFolderSubLinks', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
