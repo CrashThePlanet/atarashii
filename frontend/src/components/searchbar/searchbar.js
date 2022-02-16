@@ -2,11 +2,13 @@ import React from 'react';
 import './searchbar.css';
 
 import Input from '@mui/material/Input';
+import { styled } from '@mui/material/styles';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 
 import { motion } from 'framer-motion';
+
 
 function Searchbar () {
     const inputRef = React.useRef(null);
@@ -19,6 +21,17 @@ function Searchbar () {
             window.location.href = `https://duckduckgo.com/?q=${searchTerm}&t=ffab&ia=web`;
         }
     }
+    const CustomSearchBarInput = styled(Input)({
+        '&:before': {
+            border: 0
+        },
+        '&:hover:before': {
+            border: '0pc solid transparent !important'
+        },
+        '&:after': {
+            border: 0
+        }
+    })
 
     document.addEventListener('keypress', (e) => {
         if (e.keyCode === 13 && inputIsFocused) {
@@ -36,7 +49,7 @@ function Searchbar () {
 
     return (
         <div className="flex flex-row items-center bg-sec py-1 px-4 pr-0 rounded-full w-3/5 h-16">
-            <Input inputRef={inputRef} placeholder="Search on DuckDuckGo" className="searchInput mt-1" />
+            <CustomSearchBarInput inputRef={inputRef} placeholder="Search on DuckDuckGo" className="searchInput mt-1" />
             <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.9 }}

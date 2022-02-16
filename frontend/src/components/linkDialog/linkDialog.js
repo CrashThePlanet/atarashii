@@ -75,10 +75,15 @@ class CreateLinkDialog extends React.Component {
             borderBottomColor: 'var(--accent-color)',
         },
         '&:hover .MuiInput-root:before': {
-            borderBottomColor: 'var(--accent-color)',
+            borderBottomColor: 'var(--accent-color) !important',
         },
         '& .MuiInput-underline:after': {
             borderBottomColor: 'var(--accent-color)',
+        }
+    });
+    CustomDialog = styled(Dialog)({
+        '& .MuiPaper-root': {
+            backgroundColor: 'var(--secondary-color)'
         }
     });
 
@@ -115,7 +120,7 @@ class CreateLinkDialog extends React.Component {
 
     render() {
         return (
-            <Dialog
+            <this.CustomDialog
                 open={true}
                 maxWidth="sm"
                 fullWidth={true}
@@ -169,7 +174,7 @@ class CreateLinkDialog extends React.Component {
                         <this.PlainButton onClick={this.props.closeDialog}>CANCEL</this.PlainButton>
                         <this.SaveButton variant="contained" onClick={this.createItem}>save</this.SaveButton>
                 </DialogActions>
-            </Dialog>
+            </this.CustomDialog>
         )
     }
 }
