@@ -1,0 +1,9 @@
+.Wrapper {
+    display: grid;
+    gap: 1rem;
+    width: 90%;
+    max-width: 90%;
+    height: 70%;
+    grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+    grid-template-rows: repeat(2, 180px);
+}

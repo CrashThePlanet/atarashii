@@ -1,0 +1,3 @@
+.shortCut:not(:hover) .fab {
+    display: none;
+}

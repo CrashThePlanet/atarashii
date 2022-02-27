@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd ./atarashii-next
+gnome-terminal --title="atarashii nextjs" -e 'bash -c "npm run dev"'
