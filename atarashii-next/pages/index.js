@@ -1,4 +1,3 @@
-import styles from '../styles/Home.module.css'
 import React from 'react';
 
 import NavigationCard from './../components/elementCards';
@@ -18,30 +17,18 @@ class Home extends React.Component {
 		lastElem: 20
 	}
 	static contextType = AppContext;
-	async getShortcuts() {
-		if (this.context.token === undefined) {
-			this.props.router.prush('/login');
+	getShortcuts() {
+		if (this.props.notFound) {
+			if (this.props.token === 'notFound') {
+				this.props.router.push('/login');
+				return;
+			}
+			this.context.openAlert({type: 'error', statusCode: this.props.status, message: this.props.error});
 			return;
 		}
-		await fetch(server + '/api/shortCuts/getAll', {
-			method: 'GET',
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': 'Bearer ' + this.context.token
-			}
-		})
-		.then (res => res.json()
-			.then (data => {
-				if (res.status >= 200 && res.status < 300) this.setState({shortCuts: data.shortCuts});
-				else this.context.openAlert({type: 'error', statusCode: res.status, message: data.error});
-			})
-
-		).catch(err => {
-			console.log(err)
-			this.context.openAlert({type: 'error', message: 'Networterror occured'});
-		})
+		this.setState({shortCuts: this.props.shortCuts});
 	}
-
+	
 	nextPage() {
 		let newStart = this.state.firstElem + 19;
 		let newEnd = this.state.lastElem + 18;
@@ -59,7 +46,7 @@ class Home extends React.Component {
 			lastElem: newEnd
 		});
 	}
-
+	
 	componentDidMount() {
 		this.getShortcuts();
 	}
@@ -71,7 +58,7 @@ class Home extends React.Component {
 		return (
 			<div className={"h-full w-full px-6 py-2 mx-auto " + hStyle.Wrapper}>
 				{
-					this.state.shortCuts.slice(this.state.firstElem, this.state.lastElem).map((shortcut, index) => {
+					this.state.shortCuts.length > 0 && this.state.shortCuts.slice(this.state.firstElem, this.state.lastElem).map((shortcut, index) => {
 						const i = index + this.state.firstElem;
 						if (i === this.state.firstElem && this.state.firstElem !== 0) {
 							return [
@@ -87,6 +74,43 @@ class Home extends React.Component {
 				}
 			</div>
 		)
+	}
+}
+
+export async function getServerSideProps(context) {
+	if (context.req.headers.cookie === undefined || context.req.headers.cookie === null || context.req.headers.cookie === '') return {
+		props: {
+			notFound: true,
+			token: 'notFound',
+		}
+	}
+	try {
+		const token = context.req.headers.cookie.replace('token=', '');
+		const res = await fetch(server + '/api/shortCuts/getAll', {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': 'Bearer ' + token
+			}
+		});
+		const data = await res.json();
+		if (res.status >= 200 && res.status < 300) return { props: {shortCuts: data.shortCuts} };
+		else {
+			return {
+				props: {
+					notFound: true,
+					status: res.status,
+					error: data.error
+				}
+			}
+		}
+	} catch (error) {
+		console.log(error);
+		return {
+			props: {
+				error: 'Networkerror occured'
+			}
+		}
 	}
 }
 

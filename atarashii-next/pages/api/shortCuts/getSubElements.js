@@ -8,7 +8,6 @@ import jwt from 'jsonwebtoken';
 mongoose.connect(mongodbURI, { useNewUrlParser: true });
 
 export default async  function handler(req, res) {
-    console.log(req.body);
     if (req.method !== 'POST') {
         res.status(405).send({error: 'Method Not Allowed'});
         return;

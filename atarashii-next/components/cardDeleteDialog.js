@@ -11,6 +11,8 @@ import { server } from './../config/index';
 
 import { useContext } from 'react';
 import { useRouter } from 'next/router';
+
+import CardStyle from './../styles/deleteCard.module.css';
  
 
 export default function CardDeleteDialog(props) {
@@ -62,7 +64,7 @@ export default function CardDeleteDialog(props) {
             <DialogContent>
                 <p>Are you sure you want to delete this {props.type === 'folder' && "folder and all it's corresponding Sub Elements?"}{props.type === 'link' && "link?"}</p>
             </DialogContent>
-            <DialogActions className="justify-around">
+            <DialogActions className={CardStyle.buttonWrapper}>
                 <Button className="w-2/5 bg-succ" onClick={props.closeDialog} buttontext="Cancel" />
                 <Button className="w-2/5" onClick={() => handleDelete()} buttontext="Delete" />
             </DialogActions>

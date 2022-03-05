@@ -118,12 +118,12 @@ export default function Login() {
                         onClick={(e) => handleSubmit(e)}
                     />
                     <p className="mt-2 text-md">
-                        <span className="opacity-70">You don't have a account? Register </span>
+                        <span className="opacity-70">You don&apos;t have a account? Register </span>
                         <span className="underline text-acc"><Link href="/registration">here</Link></span>
                         <span className="opacity-70">.</span>
                     </p>
                 </div>
-                <Divider orientation='vertical' variant="middle" flexItem className="mx-12" sx={{borderWidth: 1, borderColor: 'var(--font-color)', opacity: 0.6, borderRadius: 20}} />
+                <Divider orientation='vertical' variant="middle" flexItem className={loginStyle.divider} sx={{borderWidth: 1, borderColor: 'var(--font-color)', opacity: 0.6, borderRadius: 20}} />
                 <div>
                     <QRCode 
                         className="mx-auto"
@@ -133,7 +133,7 @@ export default function Login() {
                         fgColor="#ffffff"
                     />
                     <h1 className="text-2xl text-center mt-2"><b>{fastID}</b></h1>
-                    <p className={loginStyle.infoText + " mt-6"}>Scan this QR Code or enter this Code on a device you're logged in with to log in.</p>
+                    <p className={loginStyle.infoText + " mt-6"}>Scan this QR Code or enter this Code on a device you&apos;re logged in with to log in.</p>
                 </div>
             </div>
         </div>
