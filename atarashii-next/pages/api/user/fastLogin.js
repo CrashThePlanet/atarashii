@@ -1,15 +1,28 @@
 import { Server } from 'socket.io'
 
 import jwt from 'jsonwebtoken'
-
 import { jwtSecret } from "./../../../config/index";
 
-const SocketHandler = (req, res) => {
+import NextCors from 'nextjs-cors';
+
+
+const SocketHandler = async (req, res) => {
+
+    await NextCors(req, res, {
+        methods: ['POST'],
+        origin: '*'
+    });
+
     if (res.socket.server.io) {
         console.log('Socket is already running')
     } else {
         console.log('Socket is initializing')
-        const io = new Server(res.socket.server)
+        const io = new Server(res.socket.server, {
+            cors: {
+                origin: "*",
+                methods: ["Get", "POST"]
+            }
+        });
         res.socket.server.io = io
         res.socket.server.io.on('connection', socket => {
             socket.on('checkID', data => {

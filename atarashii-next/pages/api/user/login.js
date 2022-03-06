@@ -4,12 +4,25 @@ import userSchema from './../../../databaseSchemas/user';
 
 import { jwtSecret } from "./../../../config/index";
 
+import NextCors from 'nextjs-cors';
+
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
 mongoose.connect(mongodbURI, { useNewUrlParser: true });
 
 export default async function handler(req, res) {
+
+    await NextCors(req, res, {
+        methods: ['POST'],
+        origin: '*'
+    });
+
+    if (req.method !== 'POST') {
+        res.status(405).send({error: 'Method Not Allowed'});
+        return;
+    }
+
     if (req.body.email === '' || req.body.password === '') {
         res.status(400).json({
             error: 'Invalid email or password'

@@ -5,12 +5,18 @@ import userSchema from './../../../databaseSchemas/user';
 import { jwtSecret } from "./../../../config/index";
 import jwt from 'jsonwebtoken';
 
+import NextCors from 'nextjs-cors';
+
 // lodash is used to set the value (or add element) in a nested object
 import lodash from 'lodash';
 
 mongoose.connect(mongodbURI, { useNewUrlParser: true });
 
 export default async  function handler(req, res) {
+    await NextCors(req, res, {
+        methods: ['POST'],
+        origin: '*'
+    });
     if (req.method !== 'POST') {
         res.status(405).send({error: 'Method Not Allowed'});
         return;
