@@ -6,10 +6,10 @@ import { jwtSecret } from "./../../../config/index";
 import NextCors from 'nextjs-cors';
 
 
-const SocketHandler = async (req, res) => {
+export default async function SocketHandler (req, res) {
 
     await NextCors(req, res, {
-        methods: ['POST'],
+        methods: ['POST', 'GET'],
         origin: '*'
     });
 
@@ -58,5 +58,3 @@ const SocketHandler = async (req, res) => {
     }
     res.end()
 }
-
-export default SocketHandler

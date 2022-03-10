@@ -22,7 +22,15 @@ export default async  function handler(req, res) {
     }
     try {
         const token = req.headers.authorization.split(' ')[1];
-        const decoded = jwt.verify(token, jwtSecret);
+        let decoded;
+        try {
+            decoded = jwt.verify(token, jwtSecret);
+        } catch (error) {
+            res.status(401).json({
+                error: 'JWTError'
+            });
+            return;
+        }
         const checkUser = await userSchema.find({_id: decoded.id});
 
         if (checkUser[0] === undefined) {

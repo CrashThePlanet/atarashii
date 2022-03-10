@@ -10,13 +10,28 @@ import AppContext from './../miscellaneous/appContext';
 
 import { withRouter } from 'next/router';
 
+import { withCookies, Cookies } from 'react-cookie';
+
+import { instanceOf } from 'prop-types';
+
 class Home extends React.Component {
-	state = {
-		shortCuts: [],
-		firstElem: 0,
-		lastElem: 20
+	static propTypes = {
+		cookies: instanceOf(Cookies).isRequired,
 	}
 	static contextType = AppContext;
+
+	constructor(props) {
+		super(props);
+		const { cookies } = props;
+		this.state = {
+			shortCuts: [],
+			firstElem: 0,
+			lastElem: 20,
+			cookies: cookies
+		}
+
+	}
+
 	getShortcuts() {
 		if (this.props.notFound) {
 			if (this.props.token === 'notFound') {
@@ -24,9 +39,15 @@ class Home extends React.Component {
 				return;
 			}
 			this.context.openAlert({type: 'error', statusCode: this.props.status, message: this.props.error});
+			if (this.props.error === 'JWTError') {
+				this.state.cookies.remove('token');
+				this.props.router.push('/login');
+			}
 			return;
 		}
-		this.setState({shortCuts: this.props.shortCuts});
+		if (this.props.shortCuts.length > 0) {
+			this.setState({shortCuts: this.props.shortCuts});
+		}
 	}
 	
 	nextPage() {
@@ -114,4 +135,4 @@ export async function getServerSideProps(context) {
 	}
 }
 
-export default withRouter(Home);
+export default withRouter(withCookies(Home));

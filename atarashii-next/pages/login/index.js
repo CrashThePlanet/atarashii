@@ -39,7 +39,6 @@ export default function Login() {
     const handlePasswordChange = (e) => setPassword(e)
 
     async function handleSubmit(e) {
-        socket.emit('test');
         e.preventDefault();
         await fetch(server + '/api/user/login', {
             method: 'POST',
@@ -66,31 +65,38 @@ export default function Login() {
                 }
                 openAlert({type: 'error', statusCode: res.status, message: data.error});
             });
+        }).catch(err => {
+            console.log(err);
+            this.context.opelAlert({type: 'error', message: 'Networkerror occured'});
         })
     }
 
     React.useEffect(async () => {
-        await fetch(server + '/api/user/fastLogin')
-        socket = io();
-
-        let loginID = (Math.random() + 1).toString(36).substring(6);
-
-        socket.emit('checkID', {id: loginID});
-
-        socket.on('answerID', data => {
-            if (data.result) {
-                setFastID(loginID);
-            } else {
-                loginID = (Math.random() + 1).toString(36).substring(6);
-                socket.emit('checkID', {id: loginID});
-            }
-        });
-        socket.on('token', data => {
-            updateToken(data.token);
-            router.push('/');
-            socket.emit('closeRoom', {room: fastID});
-            return;
-        });
+        try {
+            await fetch(server + '/api/user/fastLogin')
+            socket = io();
+    
+            let loginID = (Math.random() + 1).toString(36).substring(6);
+    
+            socket.emit('checkID', {id: loginID});
+    
+            socket.on('answerID', data => {
+                if (data.result) {
+                    setFastID(loginID);
+                } else {
+                    loginID = (Math.random() + 1).toString(36).substring(6);
+                    socket.emit('checkID', {id: loginID});
+                }
+            });
+            socket.on('token', data => {
+                updateToken(data.token);
+                router.push('/');
+                socket.emit('closeRoom', {room: fastID});
+                return;
+            });
+        } catch (error) {
+            openAlert({type: 'error', statusCode: 500, message: error.message});
+        }
     }, []);
 
     return (
