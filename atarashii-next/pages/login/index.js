@@ -57,8 +57,9 @@ export default function Login() {
                     openAlert({type: 'success', statusCode: res.status, message: data.success});
                     setCookie("token", data.token, {
                         path: "/",
-                        secure: true,
-                        maxAge: 2592000
+                        //secure: true,
+                        maxAge: 2592000,
+                        sameSite: "strict"
                     });
                     router.push('/');
                     return;
@@ -67,7 +68,7 @@ export default function Login() {
             });
         }).catch(err => {
             console.log(err);
-            this.context.opelAlert({type: 'error', message: 'Networkerror occured'});
+            openAlert({type: 'error', message: 'Networkerror occured'});
         })
     }
 

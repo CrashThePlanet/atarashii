@@ -60,8 +60,9 @@ function MyApp({ Component, pageProps }) {
                 router: usableRouter,
                 updateToken: (token) => setCookie('token', token, {
                     path: "/",
-                    secure: true,
-                    maxAge: 2592000
+                    //secure: true,
+                    maxAge: 2592000,
+                    sameSite: "strict"
                 })
             }}
         >   

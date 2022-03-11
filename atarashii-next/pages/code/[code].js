@@ -16,6 +16,9 @@ class FastLogin extends React.Component {
             this.connectToSocket(this.props.router.query);
         }
     }
+    componentDidMount() {
+        this.connectToSocket(this.props.router.query);
+    }
 
     async connectToSocket(query) {
         if (this.context.token === undefined) {
