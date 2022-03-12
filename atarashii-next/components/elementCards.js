@@ -59,7 +59,7 @@ export default function NavigationCard (props) {
             className={CStyle.shortCut}
             whileHover={{ scale: 1.1, y: -10 }}
         >
-            <a href={'http://' + props.link.url}>
+            <a href={'http://' + props.link.url} target="_blank" rel="noopener noreferrer">
                 <StyledCard>
                     <CardMedia>
                         <img src={"https://t3.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=http://" + props.link.url + "&size=96"} alt="" className="urlIcon" />
