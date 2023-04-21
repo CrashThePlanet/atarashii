@@ -29,9 +29,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
-    motion
-} from 'framer-motion';
-import {
     useRouter
 } from 'next/router';
 

@@ -5,7 +5,6 @@ import react from 'react';
 import Head from 'next/head'
 
 import Header from '@/components/Header';
-import Search from '@/components/Search';
 import NewDialog from '@/components/newDialog';
 
 import {
