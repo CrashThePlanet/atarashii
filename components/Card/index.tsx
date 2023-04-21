@@ -27,7 +27,7 @@ export default function Card(props: Data): React.ReactElement {
     const theme = useTheme();
     const router = useRouter();
 
-    const prevRoute = router.asPath.slice(0, router.asPath.lastIndexOf('/'));
+    const previousRoute = router.asPath.slice(0, router.asPath.lastIndexOf('/'));
     return (
         <>
             <motion.div
@@ -35,13 +35,14 @@ export default function Card(props: Data): React.ReactElement {
                 whileHover={{scale: 1.1}}
             >
                 <Link
-                    href={props.type === 'website'? (props.url + '') : (props.type === "folder" ? ('/home/' + props.name) : prevRoute)}
+                    href={props.type === 'website'? (props.url + '') : (props.type === "folder" ? ('/home/' + props.name) : previousRoute)}
                     passHref
                 >
                     <MuiCard className="grid place-items-center h-40 rounded">
                         {props.type === 'website'? (
                             <CardMedia
                                 component='img'
+                                /*with this links its gets the fav icon of the targeted page*/
                                 image={"http://www.google.com/s2/favicons?domain=" + props.url}
                                 alt={"Logo of " + props.name}
                                 sx={{
@@ -62,6 +63,7 @@ export default function Card(props: Data): React.ReactElement {
                             </Typography>
                         </CardContent>
                     </MuiCard>
+                    {/*this svg is for the hover animation*/}
                     <svg
                         viewBox="0 0 100 100"
                         preserveAspectRatio='none'

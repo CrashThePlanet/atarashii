@@ -16,8 +16,9 @@ export default async function handler(
     return;
   }
 
-
+  // check if it should add to the top array or somewhere deeper
   if (body.path === undefined) {
+    // tries to find the element in the top array and its index
     if (data.cards.indexOf(data.cards.find((elem: any) => elem.type === body.type && elem.name === body.name)) >= 0) {
       res.status(409).send({error: 'Already exists!'});
       return;
@@ -25,6 +26,7 @@ export default async function handler(
     
     if (body.type === 'website') {
       let url = body.url;
+      // if the user forgot to provide protcoll, adds is automaticlly
       if (body.url.substring(0,6) !== 'http://' || body.url.substring(0,7) !== 'https://') {
         url = 'http://' + url;
       }
@@ -41,16 +43,24 @@ export default async function handler(
       });
     } 
   } else {
+    // if it's somewhere deeper (nested in one or more folders)
+
+    // again, it checks if the element is already present in the targeted folder
     let innerData = data.cards;
+    // diggs into the tree und gets the children of the targeted folder
     body.path.forEach((pathName: string, index: number) => {
       innerData = innerData.find((elem: any) => elem.type === 'folder' && elem.name === pathName).children;
     });
+    // check if element ist there or not
     if (innerData.indexOf(data.cards.find((elem: any) => elem.type === body.type && elem.name === body.name)) >= 0) {
       res.status(409).send({error: 'Already exists!'});
       return;
     }
 
-    
+    // the actual command to add the new element ot the tree is executed from a string
+    // this code creates this string
+    // it starts at the top, tries to find the first path element, get its index,
+    // attatch the right code (with index) to the string, overrides the array to dig in and starts over until all path elements are done
     let action = 'internalData.cards';
     innerData = data.cards
     body.path.forEach((pathName: string) => {
@@ -59,7 +69,8 @@ export default async function handler(
       innerData = innerData[index];
     });
 
-
+    // it completes the string by adding the actual element to it
+    // some concept as in the if statement at the top
     if (body.type === 'website') {
       let url = body.url;
       if (body.url.substring(0,6) !== 'http://' || body.url.substring(0,7) !== 'https://') {
@@ -77,6 +88,7 @@ export default async function handler(
         children: []
       }) + ');';
     }
+    // executes the string and so adding the new element ot the tree
     const executerFunc = new Function('data', 'const internalData = data; ' + action + 'return internalData');
     data = executerFunc(data);
   }

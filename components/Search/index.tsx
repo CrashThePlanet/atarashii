@@ -7,7 +7,8 @@ import {
     List,
     ListItem,
     ListItemButton,
-    Typography
+    Typography,
+    Box
 } from '@mui/material'
 
 import {
@@ -18,14 +19,15 @@ import {
     FontAwesomeIcon
 } from '@fortawesome/react-fontawesome';
 import {
-    faSearch
+    faSearch,
+    faArrowUpRightFromSquare
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
     useRouter
 } from 'next/router';
 
-async function getSearchHistory() {
+async function getSearchHistory() { // from server
     const res = await fetch('/api/search/getLast', {
         method: 'GET'
     });
@@ -49,9 +51,9 @@ export default function Search() {
         shit();
     }, [])
 
+    // redirects to the search page (google)
+    // if there is a query (given when using the history list) it uses this instead of the input value
     const search = async (query:string | undefined = undefined) => {
-        console.log(query);
-        
         if (searchValue === '' && query === undefined) return;
         if (query !== undefined) {
             await fetch('/api/search/add', {
@@ -89,6 +91,7 @@ export default function Search() {
                 value={searchValue}
                 onChange={e => setSearchValue(e.target.value)}
                 onFocus={() => setFocus(true)}
+                /* waits 50ms so the click event of the List buttons is firering before the list disappears*/
                 onBlur={() => {
                     setTimeout(() => {
                         setFocus(false);
@@ -117,6 +120,8 @@ export default function Search() {
                                     <Typography>
                                         {query.query}
                                     </Typography>
+                                    <Box sx={{flexGrow: 1}}></Box>
+                                    <FontAwesomeIcon icon={faArrowUpRightFromSquare} className="opacity-20" />
                                 </ListItemButton>
                             </ListItem>
                             {index < history.length -1 ? (

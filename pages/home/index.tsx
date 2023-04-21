@@ -39,6 +39,7 @@ async function getRootCards() {
         method: 'GET'
     });
     if (res.ok) return await res.json();
+    // sends error back to client if error lol
     return {
         error: true,
         code: res.status,

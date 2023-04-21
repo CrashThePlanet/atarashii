@@ -8,6 +8,7 @@ export default function handler (
     res: NextApiResponse
 ) {
     try {
+        // gets the last the 10 searches from the history (newest to oldest)
         const filePath = path.join(process.cwd(), 'storage') + '/searchHistory.json';
         const data = JSON.parse(fs.readFileSync(filePath,'utf8'));
         const queries = data.queries.slice(-10).reverse();

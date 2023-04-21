@@ -11,11 +11,12 @@ import {
   createTheme,
   ThemeProvider,
   Box,
-  Grid,
   Snackbar,
   Alert
 } from '@mui/material';
 
+
+// it's passed down to all components so they can access these functions/values
 type contextTree = {
   darkMode: {
     is: boolean,
@@ -27,18 +28,17 @@ type contextTree = {
   },
   openSnackbar: Function
 }
-
-
 const AppContext = react.createContext<contextTree>(null!)
 
 export default function App({ Component, pageProps }: AppProps) {
 
   const [darkMode, setDarkMode] = react.useState(true);
+  // the dialog to add a new Website/Folder
   const [newDialogOpen, setNewDialogOpen] = react.useState(false);
 
+  // the snakcbar is a small feedback in the bottom right corner
   const [snackbarOpen, setSnackbarOpen] = react.useState(false);
   const [snackbarContent, setSnackbarContent] = react.useState<react.ReactElement>();
-
   const openSnackbar = (content: string, type: any) => {
       setSnackbarContent(
         <Alert onClose={() => setSnackbarOpen(false)} severity={type}>{content}</Alert>
@@ -46,6 +46,7 @@ export default function App({ Component, pageProps }: AppProps) {
       setSnackbarOpen(true);
   }
   
+  //mui theme
   const theme = createTheme({
     palette: {
       mode: darkMode ? "dark" : "light",

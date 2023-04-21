@@ -12,9 +12,13 @@ export default function handler(
             res.status(400).send({error: 'noSearchQuery'});
             return;
         }
+
+        // loads the search history from the server
         const filePath = path.join(process.cwd(), 'storage') + '/searchHistory.json';
         const data = JSON.parse(fs.readFileSync(filePath,'utf8'));
 
+        // checks if this exect search is already in the history
+        // if so, just update the timestamp and sort the array
         const entrie = data.queries.find((entrie: any) => entrie.query === body.query)
         if (entrie !== undefined) {
             const queryIndex = data.queries.indexOf(entrie);
@@ -23,6 +27,7 @@ export default function handler(
                 return a.timeStamp - b.timeStamp
             });
         } else {
+            // not in history --> add
             data.queries.push({
                 query: body.query,
                 timeStamp: new Date().getTime()

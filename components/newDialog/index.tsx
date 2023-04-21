@@ -44,8 +44,9 @@ export default function NewDialog() {
     const router = useRouter();
 
     const theme = useTheme()
+    // if the dialog(the popup) should go fullscreen or not
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
-
+    // what should be created: website or folder
     const [type, setType] = react.useState('website');
     
     const [name, setName] = react.useState<any>(undefined);
@@ -70,6 +71,7 @@ export default function NewDialog() {
             appContenxt.openSnackbar("Please enter a url!", "error")
             return;
         }
+        // getrs the current path, so it knows where to create it
         const path = (router.query.cards?.length === 0 ? null : router.query?.cards);
         const res = await fetch('/api/cards/new', {
             method: 'POST',
