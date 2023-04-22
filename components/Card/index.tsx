@@ -35,7 +35,7 @@ export default function Card(props: Data): React.ReactElement {
                 whileHover={{scale: 1.1}}
             >
                 <Link
-                    href={props.type === 'website'? (props.url + '') : (props.type === "folder" ? ('/home/' + props.name) : previousRoute)}
+                    href={props.type === 'website'? (props.url + '') : (props.type === "folder" ? (router.asPath + '/' + props.name) : previousRoute)}
                     passHref
                 >
                     <MuiCard className="grid place-items-center h-40 rounded">

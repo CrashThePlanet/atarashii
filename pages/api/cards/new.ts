@@ -62,13 +62,12 @@ export default async function handler(
     // it starts at the top, tries to find the first path element, get its index,
     // attatch the right code (with index) to the string, overrides the array to dig in and starts over until all path elements are done
     let action = 'internalData.cards';
-    innerData = data.cards
-    body.path.forEach((pathName: string) => {
-      const index = innerData.indexOf(data.cards.find((elem: any) => elem.type === 'folder' && elem.name === pathName));
+    innerData = data.cards;
+    for (let pathIndex = 0; pathIndex <= body.path.length - 1; pathIndex++) {
+      const index = innerData.indexOf(innerData.find((elem: any) => elem.type === 'folder' && elem.name === body.path[pathIndex]));
       action += '[' + index + '].children';
-      innerData = innerData[index];
-    });
-
+      innerData = innerData[index].children;
+    }
     // it completes the string by adding the actual element to it
     // some concept as in the if statement at the top
     if (body.type === 'website') {

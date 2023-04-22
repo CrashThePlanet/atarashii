@@ -16,13 +16,21 @@ class CardsGridClass extends react.Component<CardsGridProps> {
     state = {
         cards: []
     }
-    async componentDidMount(): Promise<void> {
+    async loadCards(): Promise<void> {
         const data = await getCards(this.props.router.query.cards);
         if (data.error) {
             this.props.context.openSnackbar(data.code + ': ' + data.message, 'error');
             return;
         }
         this.setState({cards: data});
+    }
+    async componentDidMount(): Promise<void> {
+        this.loadCards();
+    }
+    componentDidUpdate(prevProps: Readonly<CardsGridProps>, prevState: Readonly<{}>, snapshot?: any): void {
+        if (prevProps.router.asPath !== this.props.router.asPath) {
+            this.loadCards();
+        }
     }
     render() {
         return (
