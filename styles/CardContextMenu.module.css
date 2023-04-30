@@ -1,0 +1,22 @@
+.DeleteListItem {
+    transition: 250ms;
+    position: relative;
+}
+.DeleteListItem:hover {
+    color: red;
+}
+.DeleteListItem.animation::before {
+    content: '';
+    width: 0;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: red;
+    transition: 3s;
+    transition-timing-function: linear;
+    opacity: 0.3;
+}
+.DeleteListItem.animation:active::before {
+    width: 100%;
+}

@@ -1,4 +1,5 @@
 import styles from '@/styles/Card.module.css'
+import react, { MutableRefObject } from 'react';
 
 import {
     Card as MuiCard,
@@ -18,6 +19,8 @@ import { faFolderOpen, faTurnUp } from '@fortawesome/free-solid-svg-icons';
 
 import { useRouter } from 'next/router';
 
+import CardContextMenu from './contextMenu';
+
 interface Data {
     type: string,
     name: string,
@@ -26,13 +29,33 @@ interface Data {
 export default function Card(props: Data): React.ReactElement {
     const theme = useTheme();
     const router = useRouter();
+    const [contextMenuData, setContextMenuData] = react.useState({open: false, x: 0, y: 0});
+    const cardRef = react.useRef<any>();
+    const contextMenuRef = react.useRef<any>();
 
     const previousRoute = router.asPath.slice(0, router.asPath.lastIndexOf('/'));
+
+    react.useEffect(() => {
+        cardRef.current?.addEventListener('contextmenu', (e: any) => {
+            e.preventDefault();
+            if (contextMenuRef.current?.contains(e.target)) return;
+            setContextMenuData({open: true, x: e.x, y: e.y});
+        });
+        document.addEventListener('mousedown', (e: any) => {
+            if (!cardRef.current?.contains(e.target) && !contextMenuRef.current?.contains(e.target)) {
+                setTimeout(() => {
+                    setContextMenuData({...contextMenuData, open: false});
+                }, 100);
+            }
+        })
+    }, [])
+
     return (
         <>
             <motion.div
                 className={"mx-3 cursor-pointer h-max " + styles.card}
                 whileHover={{scale: 1.1}}
+                ref={cardRef}
             >
                 <Link
                     href={props.type === 'website'? (props.url + '') : (props.type === "folder" ? (router.asPath + '/' + props.name) : previousRoute)}
@@ -73,6 +96,15 @@ export default function Card(props: Data): React.ReactElement {
                     </svg>
                 </Link>
             </motion.div>
+            {
+                contextMenuData.open && (
+                <CardContextMenu
+                    cardName={props.name}
+                    x={contextMenuData.x}
+                    y={contextMenuData.y}
+                    Cref={contextMenuRef}
+                />)
+            }
         </>
     )
 }

@@ -34,7 +34,7 @@ async function getSearchHistory() { // from server
     if (res.ok) {
         return await res.json();
     }
-}
+} 
 
 export default function Search() {
     const [searchValue, setSearchValue] = react.useState('');
