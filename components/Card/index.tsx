@@ -36,11 +36,13 @@ export default function Card(props: Data): React.ReactElement {
     const previousRoute = router.asPath.slice(0, router.asPath.lastIndexOf('/'));
 
     react.useEffect(() => {
+        // listen if for right click on a card --> open
         cardRef.current?.addEventListener('contextmenu', (e: any) => {
             e.preventDefault();
             if (contextMenuRef.current?.contains(e.target)) return;
             setContextMenuData({open: true, x: e.x, y: e.y});
         });
+        // listen for click outside card or context menu --> close context menu
         document.addEventListener('mousedown', (e: any) => {
             if (!cardRef.current?.contains(e.target) && !contextMenuRef.current?.contains(e.target)) {
                 setTimeout(() => {
@@ -100,6 +102,7 @@ export default function Card(props: Data): React.ReactElement {
                 contextMenuData.open && (
                 <CardContextMenu
                     cardName={props.name}
+                    cardType={props.type}
                     x={contextMenuData.x}
                     y={contextMenuData.y}
                     Cref={contextMenuRef}

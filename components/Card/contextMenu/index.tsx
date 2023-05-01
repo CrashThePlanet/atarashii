@@ -30,11 +30,14 @@ import { useAppContext } from '@/pages/_app';
 
 type ContextMenuProps = {
     cardName: string,
+    cardType: string,
     x: number,
     y: number,
     Cref: any
 }
 
+// time for the "hold to delete a card" action
+// user has to hold left mouse button on the delete button
 let holdedSec = 0;
 function Timer(this: any, fn: Function): any {
     let timerOBJ: NodeJS.Timer | undefined = setInterval(() => fn(), 1000);
@@ -67,15 +70,15 @@ let timer: any;
 export default function CardContextMenu(props: ContextMenuProps) {
     const [showDeleteAnimation, setShowDeleteAnimation] = react.useState('');
     const buttonRef = react.useRef<any>();
-    const router= useRouter();
+    const router = useRouter();
     const appContext = useAppContext();
 
     react.useEffect(() => {
-        console.log(router)
         timer = new (Timer as any)(async () => {
+            // deletes card after 3 selconds of holing
             if (holdedSec === 2) {
                 timer.stop();
-                const res = await deleteCard(props.cardName, (router.asPath === '/home' ? undefined : router.query.cards));
+                const res = await deleteCard(props.cardName, props.cardType, (router.asPath === '/home' ? undefined : router.query.cards));
                 if (res?.error) {
                     console.log();
                     
@@ -90,7 +93,7 @@ export default function CardContextMenu(props: ContextMenuProps) {
     }, [])
 
     async function holdToDelete(): Promise<void> {
-        setShowDeleteAnimation(styles.animation + ' ' + styles.test);
+        setShowDeleteAnimation(styles.animation);
         timer.reset();
     }
     function cancleDelete(): any {
@@ -118,8 +121,8 @@ export default function CardContextMenu(props: ContextMenuProps) {
                     <ListItem
                         disablePadding
                         className={styles.DeleteListItem + ' ' + showDeleteAnimation}
-                        onMouseDown={(e: any) => holdToDelete()}
-                        onMouseUp={(e: any) => cancleDelete()}
+                        onMouseDown={() => holdToDelete()}
+                        onMouseUp={() => cancleDelete()}
                         ref={buttonRef}
                     >
                         <ListItemButton
@@ -141,11 +144,12 @@ export default function CardContextMenu(props: ContextMenuProps) {
     )
 }
 
-async function deleteCard(cardName: string, path: string | Array<string> | undefined) {
+async function deleteCard(cardName: string, type: string,  path: string | Array<string> | undefined) {
     const res = await fetch('/api/cards/delete', {
         method: 'POST',
         body: JSON.stringify({
             cardName,
+            type,
             path
         })
     });
@@ -155,6 +159,6 @@ async function deleteCard(cardName: string, path: string | Array<string> | undef
     return {
         error: true,
         status: res.status,
-        msg: (await res.json()).msg
+        msg: (await res.json())?.msg
     }
 }
