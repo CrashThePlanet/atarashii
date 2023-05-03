@@ -61,7 +61,8 @@ export default function App({ Component, pageProps }: AppProps) {
           }
         : {
             primary: {
-              main: "#fff",
+              main: "rgb(178,178,178)",
+              dark: "#fff"
             },
             text: {
               primary: "#000",
@@ -99,8 +100,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <Box
             sx={{
               bgcolor: "primary.dark",
-              color: "text.primary",
-              height: "100vh"
+              color: "text.primary"
             }}
           >
             <main>
