@@ -80,12 +80,12 @@ export default function CardContextMenu(props: ContextMenuProps) {
                 timer.stop();
                 const res = await deleteCard(props.cardName, props.cardType, (router.asPath === '/home' ? undefined : router.query.cards));
                 if (res?.error) {
-                    console.log();
-                    
                     appContext.openSnackbar(res?.status + ': ' + res?.msg, 'error');
                     return;
                 }
+                appContext.cardContainerRef?.current.loadCards();
                 appContext.openSnackbar('Card deleted', 'success');
+                props.Cref.current.style.display = "none"
             }
             holdedSec++;
         });

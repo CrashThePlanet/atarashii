@@ -59,5 +59,7 @@ async function getCards(pathArray: any) {
 export default function CardsGrid(props: any) {
     const appContext = useAppContext();
     const router = useRouter();
-    return <CardsGridClass context={appContext} router={router} {...props} />
+    const elemeRef = react.useRef<any>();
+    appContext.cardContainerRef = elemeRef;
+    return <CardsGridClass context={appContext} ref={elemeRef} router={router} {...props} />
 }

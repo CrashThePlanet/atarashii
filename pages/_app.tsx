@@ -26,7 +26,8 @@ type contextTree = {
     isOpen: boolean,
     toggle: Function
   },
-  openSnackbar: Function
+  openSnackbar: Function,
+  cardContainerRef: undefined | React.MutableRefObject<any>
 }
 const AppContext = react.createContext<contextTree>(null!)
 
@@ -94,7 +95,8 @@ export default function App({ Component, pageProps }: AppProps) {
           isOpen: newDialogOpen,
           toggle: setNewDialogOpen
         },
-        openSnackbar
+        openSnackbar,
+        cardContainerRef: undefined
       }}>
         <ThemeProvider theme={theme}>
           <Box

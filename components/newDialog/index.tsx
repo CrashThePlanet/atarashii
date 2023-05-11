@@ -92,6 +92,7 @@ export default function NewDialog() {
             return;
         }
         appContenxt.openSnackbar((type === 'website' ? "Website" : "Folder") + " created!", "success");
+        appContenxt.cardContainerRef?.current.loadCards();
         close();
     }
 

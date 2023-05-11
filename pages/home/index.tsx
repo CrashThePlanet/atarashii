@@ -16,13 +16,16 @@ class HomeClass extends react.Component<HomeProps> {
     state = {
         cards: []
     }
-    async componentDidMount(): Promise<void> {
+    async loadCards(): Promise<void> {
         const res = await getRootCards();
         if (res.error) {
             this.props.context.openSnackbar(res.code + ': ' + res.message, 'error');
             return;
         }
         this.setState({cards: res.cards});
+    }
+    componentDidMount(): void {
+        this.loadCards();       
     }
     render() {
         return (
@@ -49,5 +52,7 @@ async function getRootCards() {
 export default function Home(props: any) {
     const appContext = useAppContext();
     const router = useRouter();
-    return <HomeClass context={appContext} router={router} {...props} ></HomeClass>;
+    const elemeRef = react.useRef<any>();
+    appContext.cardContainerRef = elemeRef;
+    return <HomeClass context={appContext} ref={elemeRef} router={router} {...props} ></HomeClass>;
 }
