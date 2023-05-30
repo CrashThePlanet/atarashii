@@ -19,7 +19,8 @@ import {
 } from '@fortawesome/react-fontawesome';
 
 import {
-    faTrashCan
+    faTrashCan,
+    faPen
 } from '@fortawesome/free-solid-svg-icons';
 
 import {
@@ -33,7 +34,8 @@ type ContextMenuProps = {
     cardType: string,
     x: number,
     y: number,
-    Cref: any
+    Cref: any,
+    handleEdit: Function
 }
 
 // time for the "hold to delete a card" action
@@ -117,6 +119,22 @@ export default function CardContextMenu(props: ContextMenuProps) {
                 <List
                     disablePadding
                 >
+                    <ListItem
+                        disablePadding
+                    >
+                        <ListItemButton
+                            onClick={() => {props.handleEdit()}}
+                        >
+                            <FontAwesomeIcon icon={faPen} />
+                            <Typography
+                                sx={{
+                                    paddingLeft: 2
+                                }}
+                            >
+                                Edit Name
+                            </Typography>
+                        </ListItemButton>
+                    </ListItem>
                     <Divider />
                     <ListItem
                         disablePadding

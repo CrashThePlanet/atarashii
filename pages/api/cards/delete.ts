@@ -25,8 +25,6 @@ export default function(
 
         if (body.path === undefined) {
             const i = data.cards.indexOf(data.cards.find((elem: any) => elem.name === body.cardName && elem.type === body.type))
-            console.log(i);
-            
             if (i < 0) {
                 res.status(404).send({msg: 'Card not found'});
                 return;

@@ -22,3 +22,6 @@
 .backIcon {
     transform: scaleX(-1);
 }
+.disabled {
+    pointer-events:fill;
+}

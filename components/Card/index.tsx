@@ -5,7 +5,8 @@ import {
     Card as MuiCard,
     CardMedia,
     Typography,
-    CardContent
+    CardContent,
+    TextField
 } from '@mui/material';
 
 import { useTheme } from '@mui/material/styles';
@@ -20,6 +21,7 @@ import { faFolderOpen, faTurnUp } from '@fortawesome/free-solid-svg-icons';
 import { useRouter } from 'next/router';
 
 import CardContextMenu from './contextMenu';
+import { useAppContext } from '@/pages/_app';
 
 interface Data {
     type: string,
@@ -29,28 +31,77 @@ interface Data {
 export default function Card(props: Data): React.ReactElement {
     const theme = useTheme();
     const router = useRouter();
+    const appContext = useAppContext();
     const [contextMenuData, setContextMenuData] = react.useState({open: false, x: 0, y: 0});
+    const [editMode, setEditMode] = react.useState<Boolean>(false);
+    const [editValue, setEditValue] = react.useState<String>(props.name);
     const cardRef = react.useRef<any>();
     const contextMenuRef = react.useRef<any>();
+    const editNameRef = react.useRef<any>();
 
     const previousRoute = router.asPath.slice(0, router.asPath.lastIndexOf('/'));
 
+    const test = () => editMode;
+
     react.useEffect(() => {
-        // listen if for right click on a card --> open
-        cardRef.current?.addEventListener('contextmenu', (e: any) => {
-            e.preventDefault();
-            if (contextMenuRef.current?.contains(e.target)) return;
-            setContextMenuData({open: true, x: e.x, y: e.y});
-        });
-        // listen for click outside card or context menu --> close context menu
-        document.addEventListener('mousedown', (e: any) => {
-            if (!cardRef.current?.contains(e.target) && !contextMenuRef.current?.contains(e.target)) {
-                setTimeout(() => {
-                    setContextMenuData({...contextMenuData, open: false});
-                }, 100);
+        function init() {
+            // listen if for right click on a card --> open context menu
+            cardRef.current?.addEventListener('contextmenu', (e: any) => {
+                e.preventDefault();
+                if (contextMenuRef.current?.contains(e.target)) return;
+                setContextMenuData({open: true, x: e.x, y: e.y});
+            });
+
+            function handleMouseClick(e: any) {
+                if (!cardRef.current?.contains(e.target) && !contextMenuRef.current?.contains(e.target)) {
+                    setTimeout(() => {
+                        setContextMenuData({...contextMenuData, open: false});
+                    }, 100);
+                }
+                if (!(cardRef.current?.contains(e.target) || editNameRef.current?.contains(e.target))) {
+                    resetEdit();
+                }
             }
-        })
-    }, [])
+            // listen for click outside card or context menu --> close context menu
+            document.addEventListener('mousedown', handleMouseClick);
+            return () => {document.removeEventListener('mousedown', handleMouseClick)}
+        };
+        init()
+    }, []);
+
+    const handleEdit = (): void => {
+        setEditMode(true);
+        setContextMenuData({...contextMenuData, open: false});        
+    }
+    const resetEdit = (): void => {
+        setEditMode(false);
+        setEditValue(props.name)
+    }
+    const handleSubmit = async (e: any) => {
+        if (e.code === 'Enter') {
+            if (editValue.trim() === props.name) return resetEdit();
+            if (editValue.trim().length <= 0) return resetEdit();
+
+            const res = await fetch('/api/cards/edit', {
+                method: 'POST',
+                body: JSON.stringify({
+                    target: props.name,
+                    type: props.type,
+                    newName: editValue.trim(),
+                    path: router.query.cards
+                })
+            });
+            if (!res.ok) {
+                const resText = await res.text();
+                appContext.openSnackbar(res.status + ': ' + (resText === undefined ? res.statusText : resText), 'error');
+                return;
+            }
+            setEditMode(false);
+            setEditValue(editValue.trim());
+            appContext.openSnackbar('Name changed', 'success');
+            appContext.cardContainerRef?.current.loadCards();
+        }
+    }
 
     return (
         <>
@@ -61,6 +112,8 @@ export default function Card(props: Data): React.ReactElement {
             >
                 <Link
                     href={props.type === 'website'? (props.url + '') : (props.type === "folder" ? (router.asPath + '/' + props.name) : previousRoute)}
+                    onClick={(e:any) => {if (editMode) {e.preventDefault()}}}
+
                     passHref
                 >
                     <MuiCard className="grid place-items-center h-40 rounded">
@@ -84,7 +137,9 @@ export default function Card(props: Data): React.ReactElement {
                             <Typography
                                 variant='h6'
                                 >
-                                {props.name}
+                                {editMode ? (
+                                    <TextField value={editValue} onChange={(e:any) => {setEditValue(e.target.value)}} onKeyUp={handleSubmit} ref={editNameRef} />
+                                ) : (props.name)}
                             </Typography>
                         </CardContent>
                     </MuiCard>
@@ -106,6 +161,7 @@ export default function Card(props: Data): React.ReactElement {
                     x={contextMenuData.x}
                     y={contextMenuData.y}
                     Cref={contextMenuRef}
+                    handleEdit={() => handleEdit()}
                 />)
             }
         </>
