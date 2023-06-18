@@ -16,8 +16,10 @@ import {
 import {
     faPlus,
     faMoon,
-    faSun
+    faSun,
+    faRightFromBracket
 } from '@fortawesome/free-solid-svg-icons';
+import { useRouter } from 'next/router';
 
 import react from 'react';
 import {
@@ -26,13 +28,25 @@ import {
 
 export default function Header() {
     const appContext = useAppContext();
-
+    const router = useRouter();
     return (<>
         <AppBar
             position='static'
         >
             <Toolbar>
                 <Box sx={{flexGrow: 1}}></Box>
+                <Tooltip
+                    title="Logout"
+                >
+                    <IconButton
+                    onClick={() => {
+                        sessionStorage.clear();
+                        router.push('/login');
+                    }}
+                    >
+                        <FontAwesomeIcon icon={faRightFromBracket} />
+                    </IconButton>
+                </Tooltip>
                 <Box>
                     {
                         appContext.darkMode.is ? (

@@ -84,6 +84,9 @@ export default function Card(props: Data): React.ReactElement {
 
             const res = await fetch('/api/cards/edit', {
                 method: 'POST',
+                headers: {
+                    'Authorization': String(sessionStorage.getItem('userUUID'))
+                },
                 body: JSON.stringify({
                     target: props.name,
                     type: props.type,
@@ -92,6 +95,11 @@ export default function Card(props: Data): React.ReactElement {
                 })
             });
             if (!res.ok) {
+                if (res.status == 401) {
+                    appContext.openSnackbar('Please login again!', 'error');
+                    router.push('/login');
+                    return;
+                }
                 const resText = await res.text();
                 appContext.openSnackbar(res.status + ': ' + (resText === undefined ? res.statusText : resText), 'error');
                 return;

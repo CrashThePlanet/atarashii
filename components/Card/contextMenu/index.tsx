@@ -82,12 +82,17 @@ export default function CardContextMenu(props: ContextMenuProps) {
                 timer.stop();
                 const res = await deleteCard(props.cardName, props.cardType, (router.asPath === '/home' ? undefined : router.query.cards));
                 if (res?.error) {
+                    if (res?.status == 401) {
+                        appContext.openSnackbar('Please login again!', 'error');
+                        router.push('/login');
+                        return;
+                    }
                     appContext.openSnackbar(res?.status + ': ' + res?.msg, 'error');
                     return;
                 }
-                appContext.cardContainerRef?.current.loadCards();
                 appContext.openSnackbar('Card deleted', 'success');
                 props.Cref.current.style.display = "none"
+                appContext.cardContainerRef?.current.loadCards();
             }
             holdedSec++;
         });
@@ -165,6 +170,9 @@ export default function CardContextMenu(props: ContextMenuProps) {
 async function deleteCard(cardName: string, type: string,  path: string | Array<string> | undefined) {
     const res = await fetch('/api/cards/delete', {
         method: 'POST',
+        headers: {
+            'Authorization': String(sessionStorage.getItem('userUUID'))
+        },
         body: JSON.stringify({
             cardName,
             type,

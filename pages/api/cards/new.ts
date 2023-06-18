@@ -3,8 +3,10 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import path from 'path';
 const fs = require('fs');
 
-const jsonPath = path.join(process.cwd(), 'storage') + '/cards.json';
-let data = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+const db = require('@/databaseConn');
+
+// const jsonPath = path.join(process.cwd(), 'storage') + '/cards.json';
+// let data = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
 
 export default async function handler(
   req: NextApiRequest,
@@ -15,6 +17,17 @@ export default async function handler(
     res.status(400).send({error: 'Missing Information'});
     return;
   }
+  if (req.headers.authorization === undefined) {
+    res.status(401).end();
+    return;
+  }
+  const dataQuery = await db.execute(`SELECT elements FROM userViews WHERE userID = '${req.headers.authorization}'`);
+  if (dataQuery[0][0].length < 1) {
+    res.status(401).end();
+    return;
+  }  
+  let data = dataQuery[0][0].elements;
+  
 
   // check if it should add to the top array or somewhere deeper
   if (body.path === undefined) {
@@ -91,6 +104,8 @@ export default async function handler(
     const executerFunc = new Function('data', 'const internalData = data; ' + action + 'return internalData');
     data = executerFunc(data);
   }
-  fs.writeFileSync(jsonPath, JSON.stringify(data), 'utf8');
+  const updateQuery = db.execute(`UPDATE userViews SET elements = '${JSON.stringify(data)}' WHERE userID = '${req.headers.authorization}'`);
   res.status(200).end();
+  // fs.writeFileSync(jsonPath, JSON.stringify(data), 'utf8');
+  // res.status(200).end();
 }

@@ -75,6 +75,9 @@ export default function NewDialog() {
         const path = (router.query.cards?.length === 0 ? null : router.query?.cards);
         const res = await fetch('/api/cards/new', {
             method: 'POST',
+            headers: {
+                'Authorization': String(sessionStorage.getItem('userUUID'))
+            },
             body: type === 'website' ? 
                 JSON.stringify({
                     type,

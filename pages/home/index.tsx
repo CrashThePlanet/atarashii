@@ -19,13 +19,22 @@ class HomeClass extends react.Component<HomeProps> {
     async loadCards(): Promise<void> {
         const res = await getRootCards();
         if (res.error) {
+            if (res.code == 401) {
+                this.props.context.openSnackbar('Please login again!', 'error');
+                this.props.router.push('/login');
+                return;
+            }
             this.props.context.openSnackbar(res.code + ': ' + res.message, 'error');
             return;
         }
         this.setState({cards: res.cards});
     }
     componentDidMount(): void {
-        this.loadCards();       
+        if (sessionStorage.getItem('userUUID') === null) {
+            this.props.router.push('/login');
+            return;
+        }     
+        this.loadCards();
     }
     render() {
         return (
@@ -39,7 +48,10 @@ class HomeClass extends react.Component<HomeProps> {
 }
 async function getRootCards() {
     const res = await fetch('/api/cards/get', {
-        method: 'GET'
+        method: 'GET',
+        headers: {
+            'Authorization': String(sessionStorage.getItem('userUUID'))
+        }
     });
     if (res.ok) return await res.json();
     // sends error back to client if error lol

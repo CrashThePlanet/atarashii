@@ -3,7 +3,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import path from 'path';
 const fs = require('fs');
 
-export default function(
+const db = require('@/databaseConn');
+
+export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse
 ) {
@@ -12,14 +14,26 @@ export default function(
             res.status(405).end();
             return;
         }
+        if (req.headers.authorization === undefined) {
+            res.status(401).end();
+            return;
+        }
         const body = JSON.parse(req.body)
         if (typeof body.cardName !== 'string') {
             res.status(400).send({msg: 'Missing Card name'});
             return;
         }
         // get data (cards) from json file
-        const filePath = path.join(process.cwd(), 'storage') + '/cards.json';
-        let data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        // const filePath = path.join(process.cwd(), 'storage') + '/cards.json';
+        // let data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+
+        const getQuery = await db.execute(`SELECT elements FROM userViews WHERE userID = '${req.headers.authorization}'`);
+        if (getQuery[0][0].length < 1) {
+            res.status(401).end();
+            return;
+        }
+        let data = getQuery[0][0].elements;
+
 
         // deletes by name
 
@@ -53,11 +67,13 @@ export default function(
             const executerFunc = new Function('data', 'const internalData = data; ' + action + ';return internalData');
             data = executerFunc(data);
         }
-        fs.writeFileSync(filePath, JSON.stringify(data), 'utf8');
+        // fs.writeFileSync(filePath, JSON.stringify(data), 'utf8');
+        // res.status(200).end();
+
+        const updateQuery = db.execute(`UPDATE userViews SET elements = '${JSON.stringify(data)}' WHERE userID = '${req.headers.authorization}'`);
         res.status(200).end();
     } catch (error) {
         console.log(error);
-        
         res.status(500).end();        
     }
 }

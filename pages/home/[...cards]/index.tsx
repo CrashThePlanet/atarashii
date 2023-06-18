@@ -19,12 +19,21 @@ class CardsGridClass extends react.Component<CardsGridProps> {
     async loadCards(): Promise<void> {
         const data = await getCards(this.props.router.query.cards);
         if (data.error) {
+            if (data.code == 401) {
+                this.props.context.openSnackbar('Please login again!', 'error');
+                this.props.router.push('/login');
+                return;
+            }
             this.props.context.openSnackbar(data.code + ': ' + data.message, 'error');
             return;
         }
         this.setState({cards: data});
     }
     async componentDidMount(): Promise<void> {
+        if (sessionStorage.getItem('userUUID') === null) {
+            this.props.router.push('/login');
+            return;
+        }
         this.loadCards();
     }
     componentDidUpdate(prevProps: Readonly<CardsGridProps>, prevState: Readonly<{}>, snapshot?: any): void {
@@ -47,6 +56,9 @@ class CardsGridClass extends react.Component<CardsGridProps> {
 async function getCards(pathArray: any) {
     const res = await fetch('/api/cards/get', {
         method: 'POST',
+        headers: {
+            'Authorization': String(sessionStorage.getItem('userUUID'))
+        },
         body: JSON.stringify({
             path: pathArray
         })

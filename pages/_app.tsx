@@ -14,6 +14,9 @@ import {
   Snackbar,
   Alert
 } from '@mui/material';
+import {
+  useRouter
+} from 'next/router';
 
 
 // it's passed down to all components so they can access these functions/values
@@ -32,7 +35,7 @@ type contextTree = {
 const AppContext = react.createContext<contextTree>(null!)
 
 export default function App({ Component, pageProps }: AppProps) {
-
+  const router = useRouter();
   const [darkMode, setDarkMode] = react.useState(true);
   // the dialog to add a new Website/Folder
   const [newDialogOpen, setNewDialogOpen] = react.useState(false);
@@ -106,7 +109,9 @@ export default function App({ Component, pageProps }: AppProps) {
             }}
           >
             <main>
-              <Header />
+              {
+                router.asPath !== '/login' ? (<Header />) : ''
+              }
               <Component {...pageProps} />
             </main>
           </Box>

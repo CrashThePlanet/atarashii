@@ -16,7 +16,8 @@ export default function MotionButton(Props: any) {
     const theme = useTheme();
     return (
         <motion.div
-            className={styles.Button}
+            {...Props}
+            className={Props.className + " " + styles.Button}
             style={{
                 backgroundColor: theme.palette.secondary.main
             }}
@@ -26,7 +27,6 @@ export default function MotionButton(Props: any) {
             whileTap={{
                 scale: 0.95
             }}
-            {...Props}
         >
             <Typography variant="button">
                 {Props.children}

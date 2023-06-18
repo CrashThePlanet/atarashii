@@ -27,9 +27,17 @@ import {
     useRouter
 } from 'next/router';
 
+import {
+    useAppContext
+} from '@/pages/_app';
+
+
 async function getSearchHistory() { // from server
     const res = await fetch('/api/search/getLast', {
-        method: 'GET'
+        method: 'GET',
+        headers: {
+            'Authorization': String(sessionStorage.getItem('userUUID'))
+        }
     });
     if (res.ok) {
         return await res.json();
@@ -40,13 +48,19 @@ export default function Search() {
     const [searchValue, setSearchValue] = react.useState('');
     const [history, setHistory] = react.useState([]);
     const [focus, setFocus] = react.useState(false);
-
-    const router = useRouter();
     const theme = useTheme();
 
+    const appContext = useAppContext();
+    const router = useRouter();
+
     react.useEffect(() => {
+        if (sessionStorage.getItem('userUUID') === undefined) {
+            appContext.openSnackbar('Please login again!', 'error');
+            router.push('/login');
+            return;
+        }
         const shit = async () => {
-            setHistory(await getSearchHistory());
+            setHistory(await getSearchHistory());            
         }
         shit();
     }, [])
@@ -58,11 +72,17 @@ export default function Search() {
         if (query !== undefined) {
             await fetch('/api/search/add', {
                 method: 'POST',
+                headers: {
+                    'Authorization': String(sessionStorage.getItem('userUUID'))
+                },
                 body: JSON.stringify({query})
             });
         } else {
             await fetch('/api/search/add', {
                 method: 'POST',
+                headers: {
+                    'Authorization': String(sessionStorage.getItem('userUUID'))
+                },
                 body: JSON.stringify({query: searchValue})
             });
         }
@@ -99,7 +119,7 @@ export default function Search() {
                 }}
             />
             <FontAwesomeIcon icon={faSearch} size="2x" className="cursor-pointer" onClick={() => search()} />
-            {focus && (
+            {focus && history.length > 0 && (
                 <List className="absolute w-full shadow-lg"
                     sx={{
                         top: '110%',
