@@ -18,6 +18,10 @@ import {
   useRouter
 } from 'next/router';
 
+import { config } from '@fortawesome/fontawesome-svg-core';
+config.autoAddCss = false;
+import '@fortawesome/fontawesome-svg-core/styles.css'
+
 
 // it's passed down to all components so they can access these functions/values
 type contextTree = {

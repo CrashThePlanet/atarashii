@@ -60,7 +60,7 @@ export default function Search() {
             return;
         }
         const shit = async () => {
-            setHistory(await getSearchHistory());            
+            setHistory(await getSearchHistory());       
         }
         shit();
     }, [])
@@ -98,14 +98,16 @@ export default function Search() {
                 width: 600,
                 p: 1.5,
                 borderRadius: "30px",
-                position: 'relative'
+                position: 'relative',
+                pointerEvents: 'none'
             }}
         >
             <Input 
                 placeholder='Search for something...'
                 disableUnderline
                 sx={{
-                    width: "calc(100% - 32px)"
+                    width: "calc(100% - 32px)",
+                    pointerEvents: 'auto'
                 }}
                 onKeyUp={(e) => {if(e.key === 'Enter') search()}}
                 value={searchValue}
@@ -115,12 +117,13 @@ export default function Search() {
                 onBlur={() => {
                     setTimeout(() => {
                         setFocus(false);
-                    }, 50);
+                    }, 250);
                 }}
             />
-            <FontAwesomeIcon icon={faSearch} size="2x" className="cursor-pointer" onClick={() => search()} />
+            <FontAwesomeIcon icon={faSearch} size="2x" className="cursor-pointer pointer-events-auto" onClick={() => search()} />
             {focus && history.length > 0 && (
                 <List className="absolute w-full shadow-lg"
+                    key={1}
                     sx={{
                         top: '110%',
                         left: 0,
@@ -135,6 +138,7 @@ export default function Search() {
                                 disablePadding
                                 key={index}
                                 onClick={() => search(query.query)}
+                                className="pointer-events-auto"
                             >
                                 <ListItemButton>
                                     <Typography>
