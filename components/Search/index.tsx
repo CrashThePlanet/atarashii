@@ -122,14 +122,15 @@ export default function Search() {
             />
             <FontAwesomeIcon icon={faSearch} size="2x" className="cursor-pointer pointer-events-auto" onClick={() => search()} />
             {focus && history.length > 0 && (
-                <List className="absolute w-full shadow-lg"
+                <List className="w-full shadow-lg"
                     key={1}
                     sx={{
                         top: '110%',
                         left: 0,
                         backgroundColor: theme.palette.primary.main,
                         borderRadius: 2,
-                        zIndex: 999
+                        zIndex: 999,
+                        position: 'absolute'
                     }}
                 >
                     {history.map((query: any, index: number) => (
